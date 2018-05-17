@@ -27,11 +27,6 @@ public class WordCount {
     static final String LOCAL_FILE_PATH = "D:\\temp\\word";
     static final String HDFS_FILE_PATH = "hdfs://hadoop1:9000/user/sogou/access_log.20060801.decode.filter";
 
-    public static void main(String[] args) {
-       // WordCount.wordCount();
-        WordCount.wordCount2();
-    }
-
 
     public static void wordCount() {
 
@@ -108,24 +103,42 @@ public class WordCount {
     }
 
 
-    public static void wordCount2(){
+    /**
+     *   步骤内容:
+     *   1.从本地 或 hadoop获取源并转换为RDD。 textFile 或 parallelize
+     *      -> 这里只是一个单一的rdd
+     *
+     *   2.将一个RDD具体化。
+     *      -> 这里把一个RDD装换为多个RDD，
+     *         例如下面使用flatMap将一行数据分成单个单词。
+     *
+     *   3.将RDD装换成JavaPirRdd过程。
+     *       -> 其实就是数据统计 或 计算的过程
+     *          这里类似于MR的map 和 reduce 以下使用的是：
+     *          .mapToPair(word -> new Tuple2<>(word,1))
+     .reduceByKey((x,y) ->x+y);
+     *
+     *   4.将RDD装换为java集合的过程。
+     *   ->使用collect装换为List<Tuple2<String,Integer>>
+     */
+    public static void wordCount2() {
 
         SparkConf conf = new SparkConf()
                 .setMaster("local")
                 .setAppName("run simple count");
 
-        try(JavaSparkContext sc = new JavaSparkContext(conf)){
+        try (JavaSparkContext sc = new JavaSparkContext(conf)) {
             //获取源，将源分解成单词
             JavaRDD<String> lines = sc.textFile(LOCAL_FILE_PATH)
                     .flatMap(line -> Arrays.asList(SPACE.split(line)).iterator());
 
             //类似map，reduce的运算过程
-            JavaPairRDD<String,Integer> map =
+            JavaPairRDD<String, Integer> map =
                     lines
-                            .mapToPair(word -> new Tuple2<>(word,1))
-                            .reduceByKey((x,y) ->x+y);
+                            .mapToPair(word -> new Tuple2<>(word, 1))
+                            .reduceByKey((x, y) -> x + y);
 
-            List<Tuple2<String,Integer>> tuple2s = map.collect();
+            List<Tuple2<String, Integer>> tuple2s = map.collect();
             tuple2s.forEach(tuple -> System.out.println(tuple._1 + " - " + tuple._2));
         }
     }
