@@ -2,12 +2,10 @@ package com.jiang.sparksql;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
-import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.*;
 
 import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.sort_array;
 
 /**
  * @author jiang
@@ -21,8 +19,16 @@ import static org.apache.spark.sql.functions.col;
  */
 public class SparkSQL {
 
-    private static final String SOURCE_DIRECTORY = "E://data/person.json";
-    private  static String warehouseLocation = System.getProperty("user.dir") + "spark-warehouse";
+    private static final String SOURCE_DIRECTORY = "/opt/testdata/user.json";
+
+    private static SparkSession spark = SparkSession
+            .builder()
+            .appName("java spark sql basic opr")
+            .master("local")
+            .config("spark.sql.warehouse.dir","hdfs://jiang:9000/hive/warehouse")
+            .getOrCreate();
+
+
 
     /**
      *
@@ -31,16 +37,8 @@ public class SparkSQL {
      */
     public static void sparkSql01() {
 
-        SparkSession sparkSession = SparkSession
-                .builder()
-                .appName("java spark sql basic opr")
-                .master("local[*]")
-                .config("spark.some.config.option", "some-value")
-                .config("spark.sql.warehouse.dir",warehouseLocation)
-                .getOrCreate();
-
         //创建DataFrames(非类型化数据集)
-        Dataset<Row> df = sparkSession.read().json(SOURCE_DIRECTORY);
+        Dataset<Row> df = spark.read().json(SOURCE_DIRECTORY);
         df.show();
 
 
@@ -64,20 +62,13 @@ public class SparkSQL {
 
 
     public static void sparkSql02() {
-        SparkSession sparkSession = SparkSession
-                .builder()
-                .appName("java spark sql basic opr")
-                .master("local[*]")
-                .config("spark.some.config.option", "some-value")
-                .config("spark.sql.warehouse.dir",warehouseLocation)
-                .getOrCreate();
 
         //创建DataFrames(非类型化数据集)
-        Dataset<Row> df = sparkSession.read().json(SOURCE_DIRECTORY);
+        Dataset<Row> df = spark.read().json(SOURCE_DIRECTORY);
         //注册DataFrame为一个sql的临时视图
         df.createOrReplaceTempView("person");
         //使用sql实现数据查询
-        Dataset<Row> sqlDF = sparkSession.sql("select count(*) from person where age>20");
+        Dataset<Row> sqlDF = spark.sql("select count(*) from person where age>20");
         sqlDF.show();
     }
 
@@ -86,15 +77,10 @@ public class SparkSQL {
      */
     public static void sparkSqlDataSourceSaveAndLoad() {
 
-        SparkConf conf = new SparkConf()
-                .setMaster("local")
-                .set("spark.sql.warehouse.dir",warehouseLocation)
-                .setAppName("java spark sql basic opr");
-        SparkSession sparkSession = SparkSession.builder().config(conf).getOrCreate();
 
         //创建DataFrames(非类型化数据集)
         //load
-        Dataset<Row> df = sparkSession.read()
+        Dataset<Row> df = spark.read()
                 .format("json")
                 .json(SOURCE_DIRECTORY);
         //save
@@ -103,8 +89,50 @@ public class SparkSQL {
     }
 
 
+    /**
+     *
+     *  don't load file , order to select data
+     *
+     *  save model:
+     *  SaveMode.ErrorIfExists(默认)     抛出异常
+     *  SaveMode.Append                      数据会以追加的方式保存
+     *  SaveMode.Overwrite                   新数据会覆盖原数据(先删除原数据，再保存新数据)
+     *  SaveMode.Ignore                        不保存新数据，相当于SQL语句的CREATE TABLE IF NOT EXISTS
+     *
+     */
+    public static void sparkSql03(){
+
+
+        Dataset<Row> rows = spark.sql("SELECT * FROM json.`/opt/testdata/user.json`");
+        rows.cache().show();
+
+        //start use model than save data to user2.json
+        //rows.write().mode(SaveMode.Append).save("/opt/testdata/user2.json");
+
+
+    }
+
+
+
+    public static void sparkSql04(){
+
+        //get data and change to RDD format
+        Dataset<Row> userDF = spark.read().json(SOURCE_DIRECTORY);
+        //change to parquet format
+        userDF.write().save("/opt/testdata/user.parquet");
+        //get parquet data
+        Dataset<Row> parquetDF = spark.read().parquet("/opt/testdata/user.parquet");
+        parquetDF.createOrReplaceTempView("qarquetFile");
+        Dataset<Row> userInfo = spark.sql("select id,name from qarquetFile");
+        userInfo.show();
+
+    }
+
+
+
+
     public static void main(String[] args) {
-        SparkSQL.sparkSql02();
+        SparkSQL.sparkSql04();
     }
 
 
