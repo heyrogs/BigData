@@ -2,10 +2,15 @@ package com.jiang.sparksql;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.*;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.sort_array;
+import static org.apache.spark.sql.functions.var_pop;
 
 /**
  * @author jiang
@@ -25,7 +30,8 @@ public class SparkSQL {
             .builder()
             .appName("java spark sql basic opr")
             .master("local")
-            .config("spark.sql.warehouse.dir",System.getProperty("user.dir") + "warehouse")
+            //.config("spark.sql.warehouse.dir",System.getProperty("user.dir") + "warehouse")
+            .config("spark.some.config.option", "some-value")
             .getOrCreate();
 
 
@@ -132,7 +138,36 @@ public class SparkSQL {
 
 
     public static void main(String[] args) {
-        SparkSQL.sparkSql04();
+
+        Person person = new Person("andy",32);
+
+        //Encoders are created for java beans
+        Encoder<Person> personEncoder = Encoders.bean(Person.class);
+        Dataset<Person> javaBeanDS = spark.createDataset(
+                Collections.singletonList(person),
+                personEncoder
+        );
+        javaBeanDS.show();
+
+
+        //------------------------
+
+
+        Encoder<Integer> integerEncoder = Encoders.INT();
+        Dataset<Integer> primitiveDS = spark.createDataset(
+                Arrays.asList(1,2,3,4,5),
+                integerEncoder
+        ).map((MapFunction<Integer, Integer>)value->value+1,integerEncoder);
+
+        primitiveDS.collect();
+
+
+        //DadaFrames can be convert to a Dataset by providing a class base on name
+        //String path = "examples/src/main/resources/people.json";
+        //Dataset<Person> peopleDS = spark.read().json(path).as(personEncoder);
+        //peopleDS.show();
+
+
     }
 
 

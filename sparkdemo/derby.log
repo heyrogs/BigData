@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Mon May 21 16:35:37 CST 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0163-81d6-f003-000006e0d088 
-on database directory E:\git\repository\BigData\sparkdemo\metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@2b34e38c 
-Loaded from file:/D:/programmer/repository/org/apache/derby/derby/10.10.2.0/derby-10.10.2.0.jar
+Mon May 21 22:25:05 CST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0163-8316-e123-000005f8e808 
+on database directory /home/git/BigData/sparkdemo/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@176f7f3b 
+Loaded from file:/opt/maven/repo/org/apache/derby/derby/10.10.2.0/derby-10.10.2.0.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_161-b12
-user.dir=E:\git\repository\BigData\sparkdemo
-os.name=Windows 7
+java.runtime.version=1.8.0_171-b11
+user.dir=/home/git/BigData/sparkdemo
+os.name=Linux
 os.arch=amd64
-os.version=6.1
+os.version=3.13.0-147-generic
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
