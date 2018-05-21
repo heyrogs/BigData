@@ -1,7 +1,9 @@
 package com.jiang.sparkhive;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.hive.HiveContext;
 
 /**
  * @author jiang
@@ -10,46 +12,39 @@ import org.apache.spark.sql.SparkSession;
  */
 public class SparkHive {
 
-
-
-
-    private static final SparkSession spark = SparkSession.builder()
+    private static final String PRO_PATH = System.getProperty("user.dir");
+    static final SparkSession spark = SparkSession.builder()
             .appName("spark hive use!")
-            .master("local")
-            .config("spark.sql.warehouse.dir","hdfs://jiang:9000/hive/warehouse")
+            .master("local[2]")
+            .config("spark.sql.warehouse.dir","hdfs://hadoop1:9000/user/hive/warehouse")
+            .enableHiveSupport()
             .getOrCreate();
-
     /**
      *
      *  create database , table and load data
      *
      */
-    public static void sparkHive01(){
-
-
+    public static void sparkHiveCreateBaseAndTable(){
         //craete table use hive sql
-        spark.sql("create database if not exists hive");
-        spark.sql("use hive");
-        spark.sql("create table if not exists src(key int,value string)");
-        spark.sql("LOAD DATA LOCAL INPATH '/opt/testdata/kvi.txt' into TABLE src");
-
-        spark.sql("select * from src").show();
+        spark.sql("create database if not exists hive ");
+        spark.sql("use hive ");
+        spark.sql("create table if not exists user(id int,name string) ");
+        spark.sql("LOAD DATA LOCAL INPATH '"+PRO_PATH+
+                "/src/main/resources/user.txt' INTO TABLE user ");
+        spark.sql("select * from hive.user ").show();
 
     }
 
 
-
-    public static void sparkHive02(){
-        spark.sql("select * from hive.src").show();
+    public static void queryData(){
+        spark.sql("SELECT * FROM user_access_sogo").show();
     }
 
 
 
     public static void main(String[] args) {
 
-
-        SparkHive.sparkHive02();
-
+        SparkHive.queryData();
 
     }
 

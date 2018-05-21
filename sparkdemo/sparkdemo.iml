@@ -131,24 +131,8 @@
     <orderEntry type="library" name="Maven: org.apache.parquet:parquet-hadoop:1.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.parquet:parquet-format:2.3.0-incubating" level="project" />
     <orderEntry type="library" name="Maven: org.apache.parquet:parquet-jackson:1.7.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-hive_2.11:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-hive_2.10:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.twitter:parquet-hadoop-bundle:1.6.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-core_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.twitter:chill_2.11:0.8.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-launcher_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-network-common_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-network-shuffle_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-unsafe_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.json4s:json4s-jackson_2.11:3.2.11" level="project" />
-    <orderEntry type="library" name="Maven: org.json4s:json4s-core_2.11:3.2.11" level="project" />
-    <orderEntry type="library" name="Maven: org.json4s:json4s-ast_2.11:3.2.11" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-scala_2.11:2.6.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-sql_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-sketch_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-catalyst_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.spark:spark-tags_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.scalatest:scalatest_2.11:2.2.6" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-xml_2.11:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.spark-project.hive:hive-exec:1.2.1.spark2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
@@ -194,6 +178,7 @@
     <orderEntry type="library" name="Maven: org.datanucleus:datanucleus-core:3.2.10" level="project" />
     <orderEntry type="library" name="Maven: org.apache.thrift:libthrift:0.9.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.thrift:libfb303:0.9.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-streaming_2.10:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.20" level="project" />
   </component>
 </module>

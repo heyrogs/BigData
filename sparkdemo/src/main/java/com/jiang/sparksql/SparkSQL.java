@@ -25,7 +25,7 @@ public class SparkSQL {
             .builder()
             .appName("java spark sql basic opr")
             .master("local")
-            .config("spark.sql.warehouse.dir","hdfs://jiang:9000/hive/warehouse")
+            .config("spark.sql.warehouse.dir",System.getProperty("user.dir") + "warehouse")
             .getOrCreate();
 
 
