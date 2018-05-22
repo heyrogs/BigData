@@ -52,7 +52,7 @@ public class SparkStreamingT {
          *  不间断地运行，所以需要自Driver重新启动后从上次运行的状态恢复过来
          *  此时的状态需要基于曾今的checkPoint
          */
-        JavaStreamingContext jsc = new JavaStreamingContext(conf, Durations.seconds(1));
+        JavaStreamingContext jsc = new JavaStreamingContext(conf, Durations.seconds(10));
 
         /**
          * 3.
@@ -66,7 +66,7 @@ public class SparkStreamingT {
          * ，因为没有接受到数据就提交了job。实际的企业级做法是提交job前判断时候有
          * 数据，没有的话就不会再提交。
          */
-        JavaReceiverInputDStream<String> lines = jsc.socketTextStream("local",9999);
+        JavaReceiverInputDStream<String> lines = jsc.socketTextStream("hadoop1",9999);
 
         /**
          * 4.
