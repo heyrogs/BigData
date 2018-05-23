@@ -1,6 +1,5 @@
 package com.jiang.wordcount;
 
-import com.jiang.BaseSparkStream;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
