@@ -1,5 +1,6 @@
 package com.jiang.example.sale;
 
+import com.jiang.common.Cont;
 import jdk.nashorn.internal.runtime.logging.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.storage.StorageLevel;
@@ -34,7 +35,7 @@ public class SaleAmount {
 
         JavaStreamingContext sc = new JavaStreamingContext(sparkConf, Durations.seconds(5));
         JavaReceiverInputDStream<String> lines =
-                sc.socketTextStream("hadoop1", 9999, StorageLevel.MEMORY_AND_DISK());
+                sc.socketTextStream(Cont.HOST, Cont.PORT, StorageLevel.MEMORY_AND_DISK());
 
         //flagMap 返回一个新的DStream对象
         JavaDStream<Sale> words = lines.flatMap(line -> {

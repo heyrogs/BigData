@@ -1,0 +1,98 @@
+goodsID-110::4::9.896811::0::0
+goodsID-38::1::8.256732::0::1
+goodsID-108::4::4.9478645::0::1
+goodsID-183::1::9.024677::0::2
+goodsID-166::2::9.436835::-1::0
+goodsID-140::3::8.426323::0::0
+goodsID-129::2::0.1236406::-1::0
+goodsID-171::1::6.1114955::-1::2
+goodsID-178::5::5.1479044::0::0
+goodsID-66::5::6.0941777::-1::2
+goodsID-112::3::7.1715264::-1::0
+goodsID-10::5::7.8836794::-1::0
+goodsID-180::1::6.3729606::-1::2
+
+
+
+package com.chb.sparkstreaming.goods
+
+import org.apache.spark.SparkConf
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.Seconds
+import java.text.NumberFormat
+
+/**
+ * 统计物品的关注度
+ */
+object GoodQuota {
+    def main(args: Array[String]): Unit = {
+        val sparkConf = new SparkConf().setAppName("Goodquota").setMaster("local[*]")
+
+        val ssc = new StreamingContext(sparkConf, Seconds(5))
+        ssc.sparkContext.setCheckpointDir("checkDir")
+        //监听指定端口， 获取socket中的数据
+        val datas = ssc.socketTextStream("localhost", 8889)
+
+        //消息处理
+        val quotaDStream = datas.map( line => {
+            val arrays = line.split("::")
+            val goodId = arrays(0)
+            val lookTimes = arrays(1)
+            val duration = arrays(2)
+            val iscollect = arrays(3)
+            val num = arrays(4)
+            //商品关注度怎么计算呢，这个可能需要一个约定，就是说浏览次数和浏览时间以及购买力度和是否收藏该商品都有一个权重，可能不同的公司觉得不同的选项权重不一样，可能你觉得浏览时间更重要，另一人觉得浏览次数更重要，所以我们事先约定好这个计算公式。我们约定浏览次数的权重为0.8，浏览时间权重为0.6，是否收藏和购买力度都为1。
+            var quota:Double = lookTimes.toDouble *0.8 + duration.toDouble*0.6 + iscollect.toDouble + num.toDouble
+
+            //将指标格式化， 保留三位小数
+            val numberFormat = NumberFormat.getInstance
+            numberFormat.setMinimumFractionDigits(3)
+            quota = numberFormat.format(quota).toDouble
+            (goodId, quota)
+        })
+
+
+        //更新关注度
+        //由于是流式数据，数据每分每秒都在产生，那么计算的关注值也在变化，那么就需要更新这个状态值。使用updateStateByKey来进行操作。这也是这里相对比较难的知识点。
+
+        //对初始化的DStream进行Transformation级别的处理，例如map、filter等高阶函数等的编程，来进行具体的数据计算， 在这里是通过updateStateByKey来以Batch Interval为单位来对历史状态进行更新，在这里需要使用checkPoint,用于保存父RDD的值。在Spark1.6.X之后也可以尝试使用mapWithState来进行更新值。
+        val updateDStream = quotaDStream.updateStateByKey((values:Seq[Double], state:Option[Double]) => {
+            var updateValue = state.getOrElse(0.0)
+            for(value<-values){
+                updateValue += value
+            }
+            Option(updateValue)
+        })
+
+
+        //输出
+
+/*          //不可以使用transform
+        val sortDStream = updateDStream.transform(rdd => {
+            rdd.map(tuple=>(tuple._2, tuple._1)).sortByKey(false).map(tuple=>(tuple._2, tuple._1))
+            rdd
+        })
+        sortDStream.print(5)*/
+
+        updateDStream.foreachRDD(rdd => {
+            val sortRDd = rdd.map(tuple=>(tuple._2, tuple._1)).sortByKey(false).map(tuple=>(tuple._2, tuple._1))
+            //此处不可以直接使用rdd.take(5)获取top5
+            val ts = sortRDd.take(5)
+            for(tuple<-ts) {
+                println("商品: " + tuple._1 + "的关注度" + tuple._2)
+            }
+        })
+        /*
+        updateDStream.foreachRDD(rdd => {
+            val ts = rdd.map(tuple=>(tuple._2, tuple._1)).sortByKey(false).map(tuple=>(tuple._2, tuple._1)).take(5)
+            for(tuple<-ts) {
+                println("商品: " + tuple._1 + "的关注度:" + tuple._2)
+            }
+        })*/
+
+        ssc.start()
+        ssc.awaitTermination()
+
+
+    }
+}

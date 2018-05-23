@@ -1,5 +1,6 @@
 package com.jiang.wordcount;
 
+import com.jiang.common.Cont;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
@@ -33,7 +34,7 @@ public class WordCountBySparkStream {
         JavaStreamingContext sc  = new JavaStreamingContext(sparkConf, Durations.seconds(5));
 
         JavaReceiverInputDStream<String> lines
-                = sc.socketTextStream("hadoop1",9999);
+                = sc.socketTextStream(Cont.HOST,Cont.PORT);
 
         JavaDStream<String> words = lines.flatMap(line
                 -> Arrays.asList(line.split(",")).iterator());
