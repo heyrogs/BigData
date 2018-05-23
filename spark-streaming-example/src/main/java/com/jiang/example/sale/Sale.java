@@ -22,7 +22,15 @@ public class Sale implements Serializable {
     private String saleNo;
     private String rowNo;
     private String product;
-    private Integer productNum;
-    private Double money;
+    private int productNum;
+    private double money;
 
+    @Override
+    public String toString() {
+        return "saleNo:" + saleNo
+                + ",rowNo:" + rowNo
+                + ",product:" + product
+                + "productNum:" + productNum
+                + "money:" + money;
+    }
 }
