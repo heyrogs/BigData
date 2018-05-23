@@ -9,8 +9,5 @@
         <module name="spark-streaming-example" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="spark-streaming-example" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

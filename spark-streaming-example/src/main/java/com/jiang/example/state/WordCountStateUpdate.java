@@ -59,7 +59,7 @@ public class WordCountStateUpdate {
     public static void main(String[] args) throws InterruptedException{
 
         SparkConf conf = new SparkConf()
-                .setAppName("word count state update.")
+                .setAppName("WordCountStateUpdate")
                 .setMaster("local[2]");
 
         JavaStreamingContext sc = new JavaStreamingContext(conf, Durations.seconds(5));

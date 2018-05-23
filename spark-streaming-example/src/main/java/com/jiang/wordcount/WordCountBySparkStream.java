@@ -30,7 +30,7 @@ public class WordCountBySparkStream {
     public static void main(String[] args) throws InterruptedException{
         SparkConf sparkConf = new SparkConf()
                 .setMaster("local[2]")
-                .setAppName("streamDataCount");
+                .setAppName("WordCountBySparkStream");
         JavaStreamingContext sc  = new JavaStreamingContext(sparkConf, Durations.seconds(5));
 
         JavaReceiverInputDStream<String> lines

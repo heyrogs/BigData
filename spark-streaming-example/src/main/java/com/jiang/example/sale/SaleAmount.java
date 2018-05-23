@@ -29,7 +29,7 @@ public class SaleAmount {
 
     static final SparkConf sparkConf = new SparkConf()
             .setMaster("local[2]")
-            .setAppName("streamDataCount");
+            .setAppName("SaleAmount");
 
     public static void saleAmount() {
 
