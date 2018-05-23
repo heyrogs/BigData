@@ -77,7 +77,7 @@ public class SparkStreamingT {
          */
         //遍历每一行，并且将每行分割单词返回String的iterator
         JavaDStream<String> words = lines.flatMap(line
-                -> Arrays.asList(line.split(",")).iterator());
+                -> Arrays.asList(line.split("\t")).iterator());
         /**
          * 将每一个单词的计数标记为1
          */
