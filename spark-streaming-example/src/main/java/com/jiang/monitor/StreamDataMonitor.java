@@ -52,8 +52,9 @@ public class StreamDataMonitor {
         //获取文件内容
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         List<String> lineList = new ArrayList<>();
-        while (reader.readLine() != null) {
-            lineList.add(reader.readLine());
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lineList.add(line);
         }
         Object[] lines = lineList.toArray();
         int fileRow = lines.length;
@@ -72,18 +73,17 @@ public class StreamDataMonitor {
                     System.out.println("socket connect from : " + socket.getInetAddress());
                     try {
                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                        String lineStr = "";
                         while (true) {
                             Thread.sleep(Long.parseLong(args[2]));
                             //当接口接受请求的时候，随机获取某行数据发送给对方
                             executorNum++;
-                            lineStr = lines[index(fileRow - 1)].toString();
+                            String lineStr = lines[index(fileRow - 1)].toString();
                             if (lineStr == null || "".equals(lineStr)) continue;
                             System.out.println("server send data : " + lineStr);
-                            out.write(lineStr);
+                            out.write(lineStr +"\n");
                             out.flush();
                             //socket close
-                            System.out.println("current executor num -> " + executorNum);
+                            /*System.out.println("current executor num -> " + executorNum);
                             if (executorNum % 10 == 0 && (!socket.isClosed() || socket != null)) {
                                 try {
                                     socket.close();
@@ -91,10 +91,16 @@ public class StreamDataMonitor {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                            }
+                            }*/
                         }
+
                     } catch (Exception e) {
                         System.err.println("socket disconnect .");
+                    }
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }).start();
