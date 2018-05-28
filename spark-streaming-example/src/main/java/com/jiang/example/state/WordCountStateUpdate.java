@@ -72,7 +72,7 @@ public class WordCountStateUpdate {
                 receiverDStream.flatMap(
                         line -> {
                             List<String> strList = new ArrayList<>();
-                            String[] lineRows = line.split("&");
+                            String[] lineRows = line.split("\n");
                             for (String lineRow : lineRows) {
                                 String[] words = lineRow.split(",");
                                 for (String word : words) {

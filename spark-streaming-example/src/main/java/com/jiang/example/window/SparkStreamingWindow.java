@@ -25,9 +25,6 @@ import java.util.List;
  */
 public class SparkStreamingWindow {
 
-
-
-
     public static void main(String[] args) throws InterruptedException{
 
         final SparkConf conf = new SparkConf()
@@ -36,11 +33,11 @@ public class SparkStreamingWindow {
 
 
        final JavaStreamingContext sc =
-                new JavaStreamingContext(conf, Durations.seconds(10));
+                new JavaStreamingContext(conf, Durations.seconds(5));
 
         //receive SocketServer data
         JavaReceiverInputDStream<String> receiverInputDStream =
-                sc.socketTextStream(Cont.HOST,Cont.PORT,StorageLevel.MEMORY_AND_DISK());
+                sc.socketTextStream(Cont.HOST,Cont.PORT);
 
 
         //data type transform
@@ -49,6 +46,7 @@ public class SparkStreamingWindow {
                     List<String> dataList = new ArrayList<>();
                     //count text line number
                     String [] lineRows = line.split("\n");
+                    System.out.println("lineRows = [" + lineRows.length + "]");
                     for (String lineRow : lineRows) {
                         String [] wordStrs = lineRow.split(",");
                         for (String wordStr : wordStrs) {
@@ -64,33 +62,29 @@ public class SparkStreamingWindow {
                 words.mapToPair(word ->new Tuple2<>(word,1));
 
         // windows操作, 叠加处理
+
+
         JavaPairDStream<String,Integer> wordCountPair =
                 wordsPair.reduceByKeyAndWindow(
-                        (v1,v2)->(v1+v2)
-                        ,Durations.seconds(Integer.parseInt(args[2]))
-                        ,Durations.seconds(Integer.parseInt(args[3])));
+                        (v1,v2)->v1+v2
+                        ,Durations.seconds(15)
+                        ,Durations.seconds(10));
 
         //windows操作 , 增量处理
-        /*JavaPairDStream<String,Integer> wordCount2 =
+       /* JavaPairDStream<String,Integer> wordCount2 =
                 wordsPair.reduceByKeyAndWindow(
                         (v1,v2)->(v1+v2)
                         ,(v1,v2)->(v1-v2)
                         ,Durations.seconds(Integer.parseInt(args[2]))
                         ,Durations.seconds(Integer.parseInt(args[3])));
-        */
 
-
-        wordCountPair.cache();
+        wordCount2.print();*/
+       //wordCountPair.foreachRDD(stringIntegerJavaPairRDD -> {
+           //这里可执行写入redis，hbase，mysql等操作
+       //});
         wordCountPair.print();
-        wordCountPair.save
         sc.start();
         sc.awaitTermination();
         sc.close();
-
     }
-
-
-
-
-
 }
