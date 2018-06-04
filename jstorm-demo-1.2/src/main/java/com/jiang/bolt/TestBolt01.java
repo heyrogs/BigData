@@ -28,9 +28,7 @@ public class TestBolt01 implements IRichBolt {
     @Override
     public void execute(Tuple tuple) {
         String value = tuple.getStringByField(Constant.SPOUT_KEY01);
-        String str = tuple.getString(0);
-        System.out.println("source type = [" + tuple.getSourceComponent() + "]");
-        System.out.println(" hi = [" + tuple.getStringByField(Constant.SPOUT_KEY02) + "]");
+        System.out.println("bolt1 ->  hi = [" + tuple.getStringByField(Constant.SPOUT_KEY02) + "]");
         this.collector.emit(new Values(value));
     }
 
