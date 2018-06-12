@@ -1,6 +1,6 @@
 package com.jiang;
 
-import org.apache.log4j.Logger;
+import com.jiang.task.SpiderTask;
 
 /**
  * @author ajiang
@@ -8,22 +8,8 @@ import org.apache.log4j.Logger;
  */
 public class LogProducer {
 
-
-    public static final Logger log = Logger.getLogger(LogProducer.class);
-
     public static void main(String[] args) {
-
-        int i = 0;
-
-        while (true){
-
-            log.info("value  : " + i);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-          i++;
-        }
+        SpiderTask task = new SpiderTask("http://www.paixin.com/", 5000L);
+        new Thread(task).start();
     }
 }

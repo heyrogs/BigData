@@ -11,9 +11,14 @@
     <artifactId>producer-note</artifactId>
 
     <dependencies>
-        <dependency>
+       <dependency>
             <groupId>org.apache.flume.flume-ng-clients</groupId>
             <artifactId>flume-ng-log4jappender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
         </dependency>
     </dependencies>
 
