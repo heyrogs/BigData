@@ -31,7 +31,11 @@
         <spark.version>2.0.0</spark.version>
         <jedis.version>2.7.3</jedis.version>
         <flumeng.version>1.6.0</flumeng.version>
+<<<<<<< HEAD
         <hbase.version>1.2.0</hbase.version>
+=======
+        <spark.streaming.kafka.version>2.3.0</spark.streaming.kafka.version>
+>>>>>>> ba0ae2511f61dbf610499d92d5995d746aabb75e
     </properties>
 
     <repositories>
@@ -67,7 +71,7 @@
             <dependency>
                 <groupId>org.apache.spark</groupId>
                 <artifactId>spark-streaming-kafka-0-8_2.11</artifactId>
-                <version>2.3.0</version>
+                <version>${spark.streaming.kafka.version}</version>
             </dependency>
 
             <!--lombok-->

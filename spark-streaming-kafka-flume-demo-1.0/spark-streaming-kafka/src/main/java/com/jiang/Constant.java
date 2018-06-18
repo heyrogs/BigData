@@ -6,7 +6,6 @@ package com.jiang;
  */
 public class Constant {
 
-
     public static final String TOPIC = "streaming_topic";
 
     public static final String BROKER_LIST = "ajiang:9093,ajiang:9094,ajiang:9095";
@@ -18,6 +17,5 @@ public class Constant {
     public static final String APP_NAME = "myFirstKafkaStreamingProject";
 
     public static final String GROUP_ID = "0";
-
 
 }

@@ -1,6 +1,9 @@
 package com.jiang;
 
-import org.apache.log4j.Logger;
+import com.jiang.task.SpiderTask;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author ajiang
@@ -8,22 +11,9 @@ import org.apache.log4j.Logger;
  */
 public class LogProducer {
 
-
-    public static final Logger log = Logger.getLogger(LogProducer.class);
-
     public static void main(String[] args) {
-
-        int i = 0;
-
-        while (true){
-
-            log.info("value  : " + i);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-          i++;
-        }
+        SpiderTask task = new SpiderTask("https://pixabay.com/zh/photos/", 50000L);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        executorService.submit(task);
     }
 }
