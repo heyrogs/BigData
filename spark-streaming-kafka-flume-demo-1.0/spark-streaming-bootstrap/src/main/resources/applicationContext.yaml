@@ -1,0 +1,2 @@
+hbase.zookeeper.quorum=ajiang
+hbase.zookeeper.property.clientPort=2180
