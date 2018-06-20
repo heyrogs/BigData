@@ -22,7 +22,7 @@ public class MySpout implements Scheme {
         String msg = new String(bytes);
         Values values = new Values();
         values.add(msg);
-        //System.out.println("spout msg :  = [" + msg + "]");
+        System.out.println("spout msg :  = [" + msg + "]");
         log.info("spout msg : {}", msg);
         return values;
     }

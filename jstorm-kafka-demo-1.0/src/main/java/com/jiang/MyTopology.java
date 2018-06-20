@@ -8,10 +8,10 @@ import backtype.storm.topology.TopologyBuilder;
 import com.jiang.bolt.MyBolt;
 import com.jiang.spout.MySpout;
 import scala.actors.threadpool.Arrays;
-import storm.kafka.BrokerHosts;
-import storm.kafka.KafkaSpout;
-import storm.kafka.SpoutConfig;
-import storm.kafka.ZkHosts;
+import storm.kafka.*;
+import storm.kafka.trident.GlobalPartitionInformation;
+
+import static com.jiang.Constant.*;
 
 /**
  * @author ajiang
@@ -22,15 +22,13 @@ public class MyTopology {
 
     public static void main(String[] args) throws Exception {
 
-        String topic = "hello_topic";
-        BrokerHosts brokerHosts = new ZkHosts("ajiang:2180");
-        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, topic, "", "MyTrack2");
-        spoutConfig.zkServers = Arrays.asList(new String[]{"ajiang"});
+        BrokerHosts brokerHosts = new ZkHosts(BROKER_ZK_STR, BROKER_ZK_ROOT);
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, TOPIC, ZK_ROOT, BROKER_ID);
+        spoutConfig.zkServers = Arrays.asList(ZK_SERVERS.split(","));
         spoutConfig.forceFromStart = false;
         spoutConfig.zkPort = 2180;
         spoutConfig.socketTimeoutMs = 60000;
         spoutConfig.scheme = new SchemeAsMultiScheme(new MySpout());
-
 
         //topology builder
         TopologyBuilder builder = new TopologyBuilder();
