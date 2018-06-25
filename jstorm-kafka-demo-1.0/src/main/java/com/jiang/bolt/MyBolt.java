@@ -26,7 +26,7 @@ public class MyBolt implements IRichBolt {
     @Override
     public void execute(Tuple tuple) {
         String msg = tuple.getStringByField("msg");
-        //System.out.println(" bolt msg  = [" + msg + "]");
+        System.out.println(" bolt msg  = [" + msg + "]");
         log.info("bolt msg : {}", msg);
     }
 
